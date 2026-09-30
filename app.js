@@ -1,5 +1,5 @@
 const SHEET_ID = "1iDwcpwO82rt4QqUc-B3SxE5NfaTLlzJWcozrOf3LKJA";
-const SHEET_QUERY = encodeURIComponent("select A, B, D, H, L, M where A <> '不公開'");
+const SHEET_QUERY = encodeURIComponent("select A, B, D, E, I, K, M, N where A <> '不公開'");
 const CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&tq=${SHEET_QUERY}`;
 
 const state = { rows: [], search: "", status: "all" };
@@ -44,7 +44,8 @@ function toRow(headers, values) {
   headers.forEach((header, index) => { item[header] = String(values[index] || "").trim(); });
   return {
     visibility: item["公開"] || "", status: item["狀態"] || "未分類",
-    department: item["需求者系所"] || "—", title: item["標題"] || "未命名需求", date: item["立案日"] || "", closeDate: item["結案日"] || "",
+    serviceCount: item["服務人數"] || "—", department: item["需求者系所"] || "—", title: item["標題"] || "未命名需求",
+    assignees: item["承辦人"] || "", date: item["立案日"] || "", closeDate: item["結案日"] || "",
   };
 }
 
@@ -53,6 +54,14 @@ function statusClass(status) {
   if (status.includes("結案")) return "status-closed";
   if (status.includes("立案")) return "status-open";
   return "status-other";
+}
+
+function getAssigneeSurnames(value) {
+  return String(value || "")
+    .split(/[、；，。,.;]+/)
+    .map((person) => person.trim())
+    .filter(Boolean)
+    .map((person) => person.charAt(0));
 }
 
 function escapeHtml(value) {
@@ -72,8 +81,10 @@ function render() {
   elements.body.innerHTML = rows.map((item) => `
     <tr>
       <td><span class="status-badge ${statusClass(item.status)}">${escapeHtml(item.status)}</span></td>
+      <td class="service-count-cell">${escapeHtml(item.serviceCount)}</td>
       <td class="department-cell">${escapeHtml(item.department)}</td>
       <td class="title-cell">${escapeHtml(item.title)}</td>
+      <td><div class="assignee-list">${getAssigneeSurnames(item.assignees).map((surname) => `<span class="assignee-avatar">${escapeHtml(surname)}</span>`).join("") || "—"}</div></td>
       <td class="date-cell">${escapeHtml(parseDate(item.date))}</td>
       <td class="date-cell">${escapeHtml(parseDate(item.closeDate))}</td>
     </tr>`).join("");

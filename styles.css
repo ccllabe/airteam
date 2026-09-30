@@ -46,9 +46,12 @@ th:first-child, td:first-child { padding-left: 26px; }
 td { height: 70px; padding: 12px 18px; border-bottom: 1px solid #f0f2f6; color: #69748b; font-size: 13px; }
 tbody tr { transition: background .15s ease; }
 tbody tr:hover { background: #fafbff; }
-.status-column { width: 112px; } .title-column { width: 42%; } .date-column { width: 130px; }
+.status-column { width: 112px; } .service-count-column { width: 88px; } .title-column { width: 34%; } .assignee-column { width: 150px; } .date-column { width: 130px; }
 .title-cell { color: #28344d; font-weight: 600; } .department-cell { color: #5d6980; }
+.service-count-cell { color: #5d6980; font-variant-numeric: tabular-nums; text-align: center; }
 .date-cell { color: #7f899c; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.assignee-list { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; }
+.assignee-avatar { display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border: 1px solid #cfd7f3; border-radius: 50%; color: var(--blue); background: #f3f5ff; font-size: 13px; font-weight: 700; }
 .status-badge { display: inline-flex; align-items: center; gap: 7px; padding: 6px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; white-space: nowrap; }
 .status-badge::before { width: 6px; height: 6px; border-radius: 50%; background: currentColor; content: ""; }
 .status-processing { color: var(--orange); background: #fff3e9; } .status-open { color: var(--blue); background: #eef1ff; }
@@ -73,6 +76,6 @@ tbody tr:hover { background: #fafbff; }
   .summary-card strong { font-size: 27px; }
   .toolbar, .panel-footer { padding-left: 17px; padding-right: 17px; } .toolbar-controls { display: grid; grid-template-columns: 1fr 1fr; width: 100%; }
   .search-box { grid-column: 1 / -1; width: 100%; } .select-wrap, select { width: 100%; } .refresh-button { justify-content: center; }
-  th:first-child, td:first-child { padding-left: 17px; } th, td { padding-right: 14px; padding-left: 14px; } .title-column { min-width: 230px; }
+  th:first-child, td:first-child { padding-left: 17px; } th, td { padding-right: 14px; padding-left: 14px; } .title-column { min-width: 230px; } .assignee-column { min-width: 120px; }
   .panel-footer { align-items: flex-start; flex-direction: column; gap: 7px; }
 }

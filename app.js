@@ -1,11 +1,11 @@
 const SHEET_ID = "1iDwcpwO82rt4QqUc-B3SxE5NfaTLlzJWcozrOf3LKJA";
 const CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv`;
 
-const state = { rows: [], search: "", status: "all", category: "all" };
+const state = { rows: [], search: "", status: "all" };
 const elements = {
   body: document.querySelector("#work-table-body"), empty: document.querySelector("#empty-state"), loading: document.querySelector("#loading-state"),
   message: document.querySelector("#status-message"), search: document.querySelector("#search-input"), status: document.querySelector("#status-filter"),
-  category: document.querySelector("#category-filter"), refresh: document.querySelector("#refresh-button"), resultCount: document.querySelector("#result-count"),
+  refresh: document.querySelector("#refresh-button"), resultCount: document.querySelector("#result-count"),
   visibleCount: document.querySelector("#visible-count"), activeCount: document.querySelector("#active-count"), closedCount: document.querySelector("#closed-count"),
   updatedAt: document.querySelector("#updated-at"),
 };
@@ -43,8 +43,8 @@ function toRow(headers, values) {
   const item = {};
   headers.forEach((header, index) => { item[header] = String(values[index] || "").trim(); });
   return {
-    visibility: item["公開"] || "", status: item["狀態"] || "未分類", category: item["類別"] || "未分類",
-    department: item["需求者系所"] || "—", title: item["標題"] || "未命名需求", date: item["立案日"] || "",
+    visibility: item["公開"] || "", status: item["狀態"] || "未分類",
+    department: item["需求者系所"] || "—", title: item["標題"] || "未命名需求", date: item["立案日"] || "", closeDate: item["結案日"] || "",
   };
 }
 
@@ -62,8 +62,8 @@ function escapeHtml(value) {
 function filteredRows() {
   const query = state.search.toLocaleLowerCase("zh-Hant");
   return state.rows.filter((item) => {
-    const searchable = `${item.title} ${item.department} ${item.category}`.toLocaleLowerCase("zh-Hant");
-    return (!query || searchable.includes(query)) && (state.status === "all" || item.status === state.status) && (state.category === "all" || item.category === state.category);
+    const searchable = `${item.title} ${item.department}`.toLocaleLowerCase("zh-Hant");
+    return (!query || searchable.includes(query)) && (state.status === "all" || item.status === state.status);
   });
 }
 
@@ -72,10 +72,10 @@ function render() {
   elements.body.innerHTML = rows.map((item) => `
     <tr>
       <td><span class="status-badge ${statusClass(item.status)}">${escapeHtml(item.status)}</span></td>
-      <td><span class="category-tag">${escapeHtml(item.category)}</span></td>
       <td class="department-cell">${escapeHtml(item.department)}</td>
       <td class="title-cell">${escapeHtml(item.title)}</td>
       <td class="date-cell">${escapeHtml(parseDate(item.date))}</td>
+      <td class="date-cell">${escapeHtml(parseDate(item.closeDate))}</td>
     </tr>`).join("");
   elements.empty.hidden = rows.length !== 0;
   elements.resultCount.textContent = `共 ${rows.length} 筆`;
@@ -110,7 +110,6 @@ async function loadData() {
     const headers = parsed[0].map(normalizeHeader);
     state.rows = parsed.slice(1).map((values) => toRow(headers, values)).filter((item) => item.visibility !== "不公開");
     setOptions(elements.status, [...new Set(state.rows.map((item) => item.status).filter(Boolean))], "所有狀態");
-    setOptions(elements.category, [...new Set(state.rows.map((item) => item.category).filter(Boolean))], "所有類別");
     render();
     const time = new Date().toLocaleTimeString("zh-TW", { hour: "2-digit", minute: "2-digit" });
     elements.updatedAt.textContent = time;
@@ -125,7 +124,6 @@ async function loadData() {
 
 elements.search.addEventListener("input", (event) => { state.search = event.target.value.trim(); render(); });
 elements.status.addEventListener("change", (event) => { state.status = event.target.value; render(); });
-elements.category.addEventListener("change", (event) => { state.category = event.target.value; render(); });
 elements.refresh.addEventListener("click", loadData);
 window.addEventListener("pageshow", (event) => { if (event.persisted) loadData(); });
 loadData();

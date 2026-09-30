@@ -59,10 +59,6 @@
               <span class="sr-only">篩選狀態</span>
               <select id="status-filter"><option value="all">所有狀態</option></select>
             </label>
-            <label class="select-wrap">
-              <span class="sr-only">篩選類別</span>
-              <select id="category-filter"><option value="all">所有類別</option></select>
-            </label>
             <button id="refresh-button" class="refresh-button" type="button" title="重新載入資料">
               <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8.1 8.1 0 0 0-14.8-3.9L3 10m0-5v5h5M4 13a8.1 8.1 0 0 0 14.8 3.9L21 14m0 5v-5h-5" /></svg>
               <span>重新整理</span>
@@ -76,10 +72,10 @@
             <thead>
               <tr>
                 <th class="status-column">狀態</th>
-                <th>類別</th>
                 <th>需求者系所</th>
                 <th class="title-column">標題</th>
                 <th class="date-column">立案日</th>
+                <th class="date-column">結案日</th>
               </tr>
             </thead>
             <tbody id="work-table-body"></tbody>

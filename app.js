@@ -7,7 +7,7 @@ const elements = {
   message: document.querySelector("#status-message"), search: document.querySelector("#search-input"), status: document.querySelector("#status-filter"),
   category: document.querySelector("#category-filter"), refresh: document.querySelector("#refresh-button"), resultCount: document.querySelector("#result-count"),
   visibleCount: document.querySelector("#visible-count"), activeCount: document.querySelector("#active-count"), closedCount: document.querySelector("#closed-count"),
-  updatedAt: document.querySelector("#updated-at"), footerUpdated: document.querySelector("#footer-updated"),
+  updatedAt: document.querySelector("#updated-at"),
 };
 
 function parseCsv(text) {
@@ -114,7 +114,6 @@ async function loadData() {
     render();
     const time = new Date().toLocaleTimeString("zh-TW", { hour: "2-digit", minute: "2-digit" });
     elements.updatedAt.textContent = time;
-    elements.footerUpdated.textContent = `資料來源：Google 試算表 · ${time} 更新`;
     elements.loading.hidden = true;
   } catch (error) {
     showError(error);
@@ -128,4 +127,5 @@ elements.search.addEventListener("input", (event) => { state.search = event.targ
 elements.status.addEventListener("change", (event) => { state.status = event.target.value; render(); });
 elements.category.addEventListener("change", (event) => { state.category = event.target.value; render(); });
 elements.refresh.addEventListener("click", loadData);
+window.addEventListener("pageshow", (event) => { if (event.persisted) loadData(); });
 loadData();

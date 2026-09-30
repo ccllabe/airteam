@@ -10,10 +10,7 @@ button, input, select { font: inherit; }
 button, select { cursor: pointer; }
 .app-shell { max-width: 1440px; margin: 0 auto; padding: 46px 54px 60px; }
 .hero { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; margin-bottom: 33px; }
-.eyebrow { display: flex; align-items: center; gap: 8px; color: var(--blue); font-size: 12px; font-weight: 800; letter-spacing: .13em; }
-.live-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--blue); box-shadow: 0 0 0 4px #e7ebff; }
-h1 { margin: 12px 0 4px; color: var(--navy); font-size: clamp(30px, 4vw, 43px); line-height: 1.2; letter-spacing: -.05em; }
-.hero-subtitle { margin: 0; color: var(--muted); font-size: 15px; }
+h1 { margin: 0; color: var(--navy); font-size: clamp(16px, 2vw, 22px); line-height: 1.2; letter-spacing: -.04em; }
 .source-link { display: inline-flex; align-items: center; gap: 9px; padding: 12px 17px; border: 1px solid #dfe4ed; border-radius: 10px; color: #45516a; background: rgba(255,255,255,.65); font-size: 13px; font-weight: 600; text-decoration: none; transition: .2s ease; }
 .source-link:hover { border-color: #b9c5ff; color: var(--blue); background: var(--surface); }
 .summary-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 25px; }

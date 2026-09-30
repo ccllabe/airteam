@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0f172a" />
+    <title>AIR Team 工作檢視</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="hero">
+        <div>
+          <div class="eyebrow"><span class="live-dot"></span> AIR TEAM · WORKSPACE</div>
+          <h1>工作狀態總覽</h1>
+          <p class="hero-subtitle">即時掌握團隊需求與處理進度</p>
+        </div>
+        <a class="source-link" href="https://docs.google.com/spreadsheets/d/1iDwcpwO82rt4QqUc-B3SxE5NfaTLlzJWcozrOf3LKJA/edit?usp=sharing" target="_blank" rel="noreferrer">
+          開啟原始試算表 <span aria-hidden="true">↗</span>
+        </a>
+      </header>
+
+      <section class="summary-grid" aria-label="工作摘要">
+        <article class="summary-card summary-card-primary">
+          <span class="summary-label">目前顯示</span>
+          <strong id="visible-count">—</strong>
+          <span class="summary-caption">筆公開需求</span>
+        </article>
+        <article class="summary-card">
+          <span class="summary-label">處理中</span>
+          <strong id="active-count">—</strong>
+          <span class="summary-caption">正在進行的項目</span>
+        </article>
+        <article class="summary-card">
+          <span class="summary-label">已結案</span>
+          <strong id="closed-count">—</strong>
+          <span class="summary-caption">完成的項目</span>
+        </article>
+        <article class="summary-card summary-card-date">
+          <span class="summary-label">資料更新</span>
+          <strong id="updated-at">—</strong>
+          <span class="summary-caption">最後載入時間</span>
+        </article>
+      </section>
+
+      <section class="workspace-panel">
+        <div class="toolbar">
+          <div class="toolbar-heading">
+            <h2>需求清單</h2>
+            <span id="result-count" class="result-count"></span>
+          </div>
+          <div class="toolbar-controls">
+            <label class="search-box">
+              <span class="sr-only">搜尋需求</span>
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m21 21-4.35-4.35m1.35-5.65a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z" /></svg>
+              <input id="search-input" type="search" placeholder="搜尋標題或系所" autocomplete="off" />
+            </label>
+            <label class="select-wrap">
+              <span class="sr-only">篩選狀態</span>
+              <select id="status-filter"><option value="all">所有狀態</option></select>
+            </label>
+            <label class="select-wrap">
+              <span class="sr-only">篩選類別</span>
+              <select id="category-filter"><option value="all">所有類別</option></select>
+            </label>
+            <button id="refresh-button" class="refresh-button" type="button" title="重新載入資料">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8.1 8.1 0 0 0-14.8-3.9L3 10m0-5v5h5M4 13a8.1 8.1 0 0 0 14.8 3.9L21 14m0 5v-5h-5" /></svg>
+              <span>重新整理</span>
+            </button>
+          </div>
+        </div>
+
+        <div id="status-message" class="status-message" role="status" hidden></div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th class="status-column">狀態</th>
+                <th>類別</th>
+                <th>需求者系所</th>
+                <th class="title-column">標題</th>
+                <th class="date-column">立案日</th>
+              </tr>
+            </thead>
+            <tbody id="work-table-body"></tbody>
+          </table>
+          <div id="empty-state" class="empty-state" hidden>
+            <div class="empty-icon">⌕</div>
+            <h3>找不到符合條件的項目</h3>
+            <p>請嘗試調整搜尋文字或篩選條件。</p>
+          </div>
+          <div id="loading-state" class="loading-state" aria-live="polite"><span class="spinner"></span> 正在載入工作資料…</div>
+        </div>
+        <footer class="panel-footer">
+          <span><span class="privacy-dot"></span> 僅顯示公開項目</span>
+          <span id="footer-updated">資料來源：Google 試算表</span>
+        </footer>
+      </section>
+    </main>
+    <script src="app.js" defer></script>
+  </body>
+</html>

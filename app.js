@@ -1,5 +1,6 @@
 const SHEET_ID = "1iDwcpwO82rt4QqUc-B3SxE5NfaTLlzJWcozrOf3LKJA";
-const CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv`;
+const SHEET_QUERY = encodeURIComponent("select A, B, D, H, L, M where A <> '不公開'");
+const CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&tq=${SHEET_QUERY}`;
 
 const state = { rows: [], search: "", status: "all" };
 const elements = {
@@ -7,7 +8,6 @@ const elements = {
   message: document.querySelector("#status-message"), search: document.querySelector("#search-input"), status: document.querySelector("#status-filter"),
   refresh: document.querySelector("#refresh-button"), resultCount: document.querySelector("#result-count"),
   visibleCount: document.querySelector("#visible-count"), activeCount: document.querySelector("#active-count"), closedCount: document.querySelector("#closed-count"),
-  updatedAt: document.querySelector("#updated-at"),
 };
 
 function parseCsv(text) {
@@ -111,8 +111,6 @@ async function loadData() {
     state.rows = parsed.slice(1).map((values) => toRow(headers, values)).filter((item) => item.visibility !== "不公開");
     setOptions(elements.status, [...new Set(state.rows.map((item) => item.status).filter(Boolean))], "所有狀態");
     render();
-    const time = new Date().toLocaleTimeString("zh-TW", { hour: "2-digit", minute: "2-digit" });
-    elements.updatedAt.textContent = time;
     elements.loading.hidden = true;
   } catch (error) {
     showError(error);

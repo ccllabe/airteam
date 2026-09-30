@@ -90,7 +90,7 @@ function render() {
     </tr>`).join("");
   elements.empty.hidden = rows.length !== 0;
   elements.resultCount.textContent = `共 ${rows.length} 筆`;
-  elements.visibleCount.textContent = state.rows.filter((item) => item.status.includes("立案")).length;
+  elements.visibleCount.textContent = state.rows.filter((item) => item.status === "立案").length;
   elements.activeCount.textContent = state.rows.filter((item) => item.status.includes("處理")).length;
   elements.closedCount.textContent = state.rows.filter((item) => item.status.includes("結案")).length;
 }

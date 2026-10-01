@@ -46,7 +46,7 @@ th:first-child, td:first-child { padding-left: 26px; }
 td { height: 70px; padding: 12px 18px; border-bottom: 1px solid #f0f2f6; color: #69748b; font-size: 13px; }
 tbody tr { transition: background .15s ease; }
 tbody tr:hover { background: #fafbff; }
-.status-column { width: 112px; } .service-count-column { width: 88px; } .title-column { width: 34%; } .assignee-column { width: 150px; } .date-column { width: 130px; }
+.status-column { width: 112px; } .service-count-column { width: 88px; } .colleague-column { width: 90px; } .title-column { width: 30%; } .assignee-column { width: 150px; } .date-column { width: 130px; }
 .title-cell { color: #28344d; font-weight: 600; } .department-cell { color: #5d6980; }
 .service-count-cell { color: #5d6980; font-variant-numeric: tabular-nums; text-align: center; }
 .date-cell { color: #7f899c; font-variant-numeric: tabular-nums; white-space: nowrap; }

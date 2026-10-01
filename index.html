@@ -61,14 +61,14 @@
           <table>
             <thead>
               <tr>
-                <th class="status-column">狀態</th>
-                <th class="service-count-column">服務人數</th>
-                <th class="colleague-column">同仁</th>
-                <th>需求者系所</th>
-                <th class="title-column">標題</th>
-                <th class="assignee-column">承辦人</th>
-                <th class="date-column">立案日</th>
-                <th class="date-column">結案日</th>
+                <th class="status-column" data-sort-column="status"><button class="sort-button" data-sort-key="status" type="button">狀態 <span class="sort-indicator" aria-hidden="true"></span></button></th>
+                <th class="service-count-column" data-sort-column="serviceCount"><button class="sort-button" data-sort-key="serviceCount" type="button">服務人數 <span class="sort-indicator" aria-hidden="true"></span></button></th>
+                <th class="colleague-column" data-sort-column="colleague"><button class="sort-button" data-sort-key="colleague" type="button">同仁 <span class="sort-indicator" aria-hidden="true"></span></button></th>
+                <th data-sort-column="department"><button class="sort-button" data-sort-key="department" type="button">需求者系所 <span class="sort-indicator" aria-hidden="true"></span></button></th>
+                <th class="title-column" data-sort-column="title"><button class="sort-button" data-sort-key="title" type="button">標題 <span class="sort-indicator" aria-hidden="true"></span></button></th>
+                <th class="assignee-column" data-sort-column="assignees"><button class="sort-button" data-sort-key="assignees" type="button">承辦人 <span class="sort-indicator" aria-hidden="true"></span></button></th>
+                <th class="date-column" data-sort-column="date"><button class="sort-button" data-sort-key="date" type="button">立案日 <span class="sort-indicator" aria-hidden="true"></span></button></th>
+                <th class="date-column" data-sort-column="closeDate"><button class="sort-button" data-sort-key="closeDate" type="button">結案日 <span class="sort-indicator" aria-hidden="true"></span></button></th>
               </tr>
             </thead>
             <tbody id="work-table-body"></tbody>

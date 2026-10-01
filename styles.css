@@ -43,6 +43,12 @@ select { min-width: 112px; padding: 0 29px 0 11px; appearance: none; background-
 table { width: 100%; border-collapse: collapse; text-align: left; }
 th { height: 47px; padding: 0 18px; border-bottom: 1px solid var(--line); color: #9aa3b3; background: #fbfcfe; font-size: 12px; font-weight: 600; white-space: nowrap; }
 th:first-child, td:first-child { padding-left: 26px; }
+.sort-button { display: inline-flex; align-items: center; gap: 5px; padding: 0; border: 0; color: inherit; background: transparent; font: inherit; font-weight: 600; white-space: nowrap; }
+.sort-button:hover, .sort-button:focus-visible { color: var(--blue); outline: none; }
+.sort-indicator { width: 0; height: 0; border-right: 4px solid transparent; border-left: 4px solid transparent; opacity: .35; }
+.sort-button.is-active .sort-indicator { opacity: 1; }
+.sort-button.is-active .sort-indicator[data-direction="asc"] { border-bottom: 5px solid currentColor; }
+.sort-button.is-active .sort-indicator[data-direction="desc"] { border-top: 5px solid currentColor; }
 td { height: 70px; padding: 12px 18px; border-bottom: 1px solid #f0f2f6; color: #69748b; font-size: 13px; }
 tbody tr { transition: background .15s ease; }
 tbody tr:hover { background: #fafbff; }

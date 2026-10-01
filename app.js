@@ -2,7 +2,7 @@ const SHEET_ID = "1iDwcpwO82rt4QqUc-B3SxE5NfaTLlzJWcozrOf3LKJA";
 const SHEET_QUERY = encodeURIComponent("select A, B, D, E, I, J, L, N, O where A <> '不公開'");
 const CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&tq=${SHEET_QUERY}`;
 
-const state = { rows: [], search: "", status: "all" };
+const state = { rows: [], search: "", status: "all", sortKey: "date", sortDirection: "desc" };
 const elements = {
   body: document.querySelector("#work-table-body"), empty: document.querySelector("#empty-state"), loading: document.querySelector("#loading-state"),
   message: document.querySelector("#status-message"), search: document.querySelector("#search-input"), status: document.querySelector("#status-filter"),
@@ -76,8 +76,33 @@ function filteredRows() {
   });
 }
 
+function sortedRows(rows) {
+  return [...rows].sort((first, second) => {
+    const firstValue = String(first[state.sortKey] || "").trim();
+    const secondValue = String(second[state.sortKey] || "").trim();
+    if (!firstValue && secondValue) return 1;
+    if (firstValue && !secondValue) return -1;
+    if (!firstValue && !secondValue) return 0;
+    const comparison = state.sortKey === "serviceCount"
+      ? (Number(firstValue) || 0) - (Number(secondValue) || 0)
+      : firstValue.localeCompare(secondValue, "zh-Hant", { numeric: true, sensitivity: "base" });
+    return state.sortDirection === "asc" ? comparison : -comparison;
+  });
+}
+
+function updateSortIndicators() {
+  document.querySelectorAll(".sort-button").forEach((button) => {
+    const active = button.dataset.sortKey === state.sortKey;
+    const indicator = button.querySelector(".sort-indicator");
+    button.classList.toggle("is-active", active);
+    button.setAttribute("aria-label", `${button.textContent.trim()}，${active ? (state.sortDirection === "asc" ? "目前正序" : "目前反序") : "點擊排序"}`);
+    if (active) indicator.dataset.direction = state.sortDirection;
+    else delete indicator.dataset.direction;
+  });
+}
+
 function render() {
-  const rows = filteredRows();
+  const rows = sortedRows(filteredRows());
   elements.body.innerHTML = rows.map((item) => `
     <tr>
       <td><span class="status-badge ${statusClass(item.status)}">${escapeHtml(item.status)}</span></td>
@@ -94,6 +119,7 @@ function render() {
   elements.visibleCount.textContent = state.rows.filter((item) => item.status === "立案").length;
   elements.activeCount.textContent = state.rows.filter((item) => item.status.includes("處理")).length;
   elements.closedCount.textContent = state.rows.filter((item) => item.status.includes("結案")).length;
+  updateSortIndicators();
 }
 
 function setOptions(select, values, label) {
@@ -135,5 +161,13 @@ async function loadData() {
 elements.search.addEventListener("input", (event) => { state.search = event.target.value.trim(); render(); });
 elements.status.addEventListener("change", (event) => { state.status = event.target.value; render(); });
 elements.refresh.addEventListener("click", loadData);
+document.querySelectorAll(".sort-button").forEach((button) => {
+  button.addEventListener("click", () => {
+    const nextKey = button.dataset.sortKey;
+    if (state.sortKey === nextKey) state.sortDirection = state.sortDirection === "asc" ? "desc" : "asc";
+    else { state.sortKey = nextKey; state.sortDirection = "asc"; }
+    render();
+  });
+});
 window.addEventListener("pageshow", (event) => { if (event.persisted) loadData(); });
 loadData();

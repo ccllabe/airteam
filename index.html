@@ -57,28 +57,65 @@
         </div>
 
         <div id="status-message" class="status-message" role="status" hidden></div>
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th class="status-column" data-sort-column="status"><button class="sort-button" data-sort-key="status" type="button">狀態 <span class="sort-indicator" aria-hidden="true"></span></button></th>
-                <th class="service-count-column" data-sort-column="serviceCount"><button class="sort-button" data-sort-key="serviceCount" type="button">服務人數 <span class="sort-indicator" aria-hidden="true"></span></button></th>
-                <th class="colleague-column" data-sort-column="colleague"><button class="sort-button" data-sort-key="colleague" type="button">同仁 <span class="sort-indicator" aria-hidden="true"></span></button></th>
-                <th data-sort-column="department"><button class="sort-button" data-sort-key="department" type="button">需求者系所 <span class="sort-indicator" aria-hidden="true"></span></button></th>
-                <th class="title-column" data-sort-column="title"><button class="sort-button" data-sort-key="title" type="button">標題 <span class="sort-indicator" aria-hidden="true"></span></button></th>
-                <th class="assignee-column" data-sort-column="assignees"><button class="sort-button" data-sort-key="assignees" type="button">承辦人 <span class="sort-indicator" aria-hidden="true"></span></button></th>
-                <th class="date-column" data-sort-column="date"><button class="sort-button" data-sort-key="date" type="button">立案日 <span class="sort-indicator" aria-hidden="true"></span></button></th>
-                <th class="date-column" data-sort-column="closeDate"><button class="sort-button" data-sort-key="closeDate" type="button">結案日 <span class="sort-indicator" aria-hidden="true"></span></button></th>
-              </tr>
-            </thead>
-            <tbody id="work-table-body"></tbody>
-          </table>
-          <div id="empty-state" class="empty-state" hidden>
-            <div class="empty-icon">⌕</div>
-            <h3>找不到符合條件的項目</h3>
-            <p>請嘗試調整搜尋文字或篩選條件。</p>
-          </div>
-          <div id="loading-state" class="loading-state" aria-live="polite"><span class="spinner"></span> 正在載入工作資料…</div>
+        <div id="loading-state" class="loading-state" aria-live="polite"><span class="spinner"></span> 正在載入工作資料…</div>
+        <div id="tables-container" hidden>
+          <section class="table-section" aria-labelledby="active-table-title">
+            <div class="table-section-heading">
+              <h3 id="active-table-title" class="table-section-title">未結案</h3>
+              <span id="active-table-count" class="result-count"></span>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th class="status-column" data-sort-column="status"><button class="sort-button" data-sort-key="status" type="button">狀態 <span class="sort-indicator" aria-hidden="true"></span></button></th>
+                    <th class="service-count-column" data-sort-column="serviceCount"><button class="sort-button" data-sort-key="serviceCount" type="button">服務人數 <span class="sort-indicator" aria-hidden="true"></span></button></th>
+                    <th class="colleague-column" data-sort-column="colleague"><button class="sort-button" data-sort-key="colleague" type="button">同仁 <span class="sort-indicator" aria-hidden="true"></span></button></th>
+                    <th data-sort-column="department"><button class="sort-button" data-sort-key="department" type="button">需求者系所 <span class="sort-indicator" aria-hidden="true"></span></button></th>
+                    <th class="title-column" data-sort-column="title"><button class="sort-button" data-sort-key="title" type="button">標題 <span class="sort-indicator" aria-hidden="true"></span></button></th>
+                    <th class="assignee-column" data-sort-column="assignees"><button class="sort-button" data-sort-key="assignees" type="button">承辦人 <span class="sort-indicator" aria-hidden="true"></span></button></th>
+                    <th class="date-column" data-sort-column="date"><button class="sort-button" data-sort-key="date" type="button">立案日 <span class="sort-indicator" aria-hidden="true"></span></button></th>
+                    <th class="date-column" data-sort-column="expectedDate"><button class="sort-button" data-sort-key="expectedDate" type="button">預完日 <span class="sort-indicator" aria-hidden="true"></span></button></th>
+                    <th class="date-column" data-sort-column="closeDate"><button class="sort-button" data-sort-key="closeDate" type="button">結案日 <span class="sort-indicator" aria-hidden="true"></span></button></th>
+                  </tr>
+                </thead>
+                <tbody id="active-work-table-body"></tbody>
+              </table>
+              <div id="active-empty-state" class="empty-state" hidden>
+                <div class="empty-icon">⌕</div>
+                <h3>沒有符合條件的未結案項目</h3>
+              </div>
+            </div>
+          </section>
+
+          <section class="table-section closed-table-section" aria-labelledby="closed-table-title">
+            <div class="table-section-heading">
+              <h3 id="closed-table-title" class="table-section-title">已結案</h3>
+              <span id="closed-table-count" class="result-count"></span>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th class="status-column" data-sort-column="status"><button class="sort-button" data-sort-key="status" type="button">狀態 <span class="sort-indicator" aria-hidden="true"></span></button></th>
+                    <th class="service-count-column" data-sort-column="serviceCount"><button class="sort-button" data-sort-key="serviceCount" type="button">服務人數 <span class="sort-indicator" aria-hidden="true"></span></button></th>
+                    <th class="colleague-column" data-sort-column="colleague"><button class="sort-button" data-sort-key="colleague" type="button">同仁 <span class="sort-indicator" aria-hidden="true"></span></button></th>
+                    <th data-sort-column="department"><button class="sort-button" data-sort-key="department" type="button">需求者系所 <span class="sort-indicator" aria-hidden="true"></span></button></th>
+                    <th class="title-column" data-sort-column="title"><button class="sort-button" data-sort-key="title" type="button">標題 <span class="sort-indicator" aria-hidden="true"></span></button></th>
+                    <th class="assignee-column" data-sort-column="assignees"><button class="sort-button" data-sort-key="assignees" type="button">承辦人 <span class="sort-indicator" aria-hidden="true"></span></button></th>
+                    <th class="date-column" data-sort-column="date"><button class="sort-button" data-sort-key="date" type="button">立案日 <span class="sort-indicator" aria-hidden="true"></span></button></th>
+                    <th class="date-column" data-sort-column="expectedDate"><button class="sort-button" data-sort-key="expectedDate" type="button">預完日 <span class="sort-indicator" aria-hidden="true"></span></button></th>
+                    <th class="date-column" data-sort-column="closeDate"><button class="sort-button" data-sort-key="closeDate" type="button">結案日 <span class="sort-indicator" aria-hidden="true"></span></button></th>
+                  </tr>
+                </thead>
+                <tbody id="closed-work-table-body"></tbody>
+              </table>
+              <div id="closed-empty-state" class="empty-state" hidden>
+                <div class="empty-icon">⌕</div>
+                <h3>沒有符合條件的已結案項目</h3>
+              </div>
+            </div>
+          </section>
         </div>
         <footer class="panel-footer">
           <span><span class="privacy-dot"></span> 僅顯示公開項目</span>

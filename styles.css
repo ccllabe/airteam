@@ -39,8 +39,12 @@ select { min-width: 112px; padding: 0 29px 0 11px; appearance: none; background-
 .refresh-button svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.8; }
 .refresh-button.is-loading svg { animation: spin .9s linear infinite; }
 .status-message { margin: 18px 26px 0; padding: 11px 14px; border: 1px solid #ffd9d9; border-radius: 8px; color: #a44848; background: #fff6f6; font-size: 13px; }
-.table-wrap { min-height: 330px; overflow-x: auto; }
+.table-section + .table-section { border-top: 1px solid var(--line); }
+.table-section-heading { display: flex; align-items: baseline; gap: 10px; padding: 20px 26px 12px; }
+.table-section-title { margin: 0; color: var(--navy); font-size: 15px; font-weight: 700; }
+.table-wrap { overflow-x: auto; }
 table { width: 100%; border-collapse: collapse; text-align: left; }
+.table-section table { min-width: 1180px; }
 th { height: 47px; padding: 0 18px; border-bottom: 1px solid var(--line); color: #9aa3b3; background: #fbfcfe; font-size: 12px; font-weight: 600; white-space: nowrap; }
 th:first-child, td:first-child { padding-left: 26px; }
 .sort-button { display: inline-flex; align-items: center; gap: 5px; padding: 0; border: 0; color: inherit; background: transparent; font: inherit; font-weight: 600; white-space: nowrap; }

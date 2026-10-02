@@ -1,10 +1,13 @@
 const SHEET_ID = "1iDwcpwO82rt4QqUc-B3SxE5NfaTLlzJWcozrOf3LKJA";
-const SHEET_QUERY = encodeURIComponent("select A, B, D, E, I, J, L, N, O where A <> '不公開'");
+const SHEET_QUERY = encodeURIComponent("select A, B, D, E, I, J, L, O, P, Q where A <> '不公開'");
 const CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&tq=${SHEET_QUERY}`;
 
 const state = { rows: [], search: "", status: "all", sortKey: "date", sortDirection: "desc" };
 const elements = {
-  body: document.querySelector("#work-table-body"), empty: document.querySelector("#empty-state"), loading: document.querySelector("#loading-state"),
+  activeBody: document.querySelector("#active-work-table-body"), closedBody: document.querySelector("#closed-work-table-body"),
+  activeEmpty: document.querySelector("#active-empty-state"), closedEmpty: document.querySelector("#closed-empty-state"),
+  activeTableCount: document.querySelector("#active-table-count"), closedTableCount: document.querySelector("#closed-table-count"),
+  tables: document.querySelector("#tables-container"), loading: document.querySelector("#loading-state"),
   message: document.querySelector("#status-message"), search: document.querySelector("#search-input"), status: document.querySelector("#status-filter"),
   refresh: document.querySelector("#refresh-button"), resultCount: document.querySelector("#result-count"),
   visibleCount: document.querySelector("#visible-count"), activeCount: document.querySelector("#active-count"), closedCount: document.querySelector("#closed-count"),
@@ -45,7 +48,7 @@ function toRow(headers, values) {
   return {
     visibility: item["公開"] || "", status: item["狀態"] || "未分類",
     serviceCount: item["服務人數"] || "—", colleague: item["需求者姓名(公開)"] || "—", department: item["需求者系所"] || "—", title: item["標題"] || "未命名需求",
-    assignees: item["承辦人"] || "", date: item["立案日"] || "", closeDate: item["結案日"] || "",
+    assignees: item["承辦人"] || "", date: item["立案日"] || "", expectedDate: item["預完日"] || "", closeDate: item["結案日"] || "",
   };
 }
 
@@ -101,9 +104,8 @@ function updateSortIndicators() {
   });
 }
 
-function render() {
-  const rows = sortedRows(filteredRows());
-  elements.body.innerHTML = rows.map((item) => `
+function renderRows(rows) {
+  return rows.map((item) => `
     <tr>
       <td><span class="status-badge ${statusClass(item.status)}">${escapeHtml(item.status)}</span></td>
       <td class="service-count-cell">${escapeHtml(item.serviceCount)}</td>
@@ -112,14 +114,27 @@ function render() {
       <td class="title-cell">${escapeHtml(item.title)}</td>
       <td><div class="assignee-list">${getAssigneeSurnames(item.assignees).map((surname) => `<span class="assignee-avatar">${escapeHtml(surname)}</span>`).join("") || "—"}</div></td>
       <td class="date-cell">${escapeHtml(parseDate(item.date))}</td>
+      <td class="date-cell">${escapeHtml(parseDate(item.expectedDate))}</td>
       <td class="date-cell">${escapeHtml(parseDate(item.closeDate))}</td>
     </tr>`).join("");
-  elements.empty.hidden = rows.length !== 0;
+}
+
+function render() {
+  const rows = sortedRows(filteredRows());
+  const activeRows = rows.filter((item) => item.status !== "結案");
+  const closedRows = rows.filter((item) => item.status === "結案");
+  elements.activeBody.innerHTML = renderRows(activeRows);
+  elements.closedBody.innerHTML = renderRows(closedRows);
+  elements.activeEmpty.hidden = activeRows.length !== 0;
+  elements.closedEmpty.hidden = closedRows.length !== 0;
+  elements.activeTableCount.textContent = `${activeRows.length} 筆`;
+  elements.closedTableCount.textContent = `${closedRows.length} 筆`;
   elements.resultCount.textContent = `共 ${rows.length} 筆`;
   elements.visibleCount.textContent = state.rows.filter((item) => item.status === "立案").length;
   elements.activeCount.textContent = state.rows.filter((item) => item.status.includes("處理")).length;
   elements.closedCount.textContent = state.rows.filter((item) => item.status.includes("結案")).length;
   updateSortIndicators();
+  elements.tables.hidden = false;
 }
 
 function setOptions(select, values, label) {
@@ -138,7 +153,9 @@ async function loadData() {
   elements.refresh.disabled = true;
   elements.refresh.classList.add("is-loading");
   elements.message.hidden = true;
-  elements.empty.hidden = true;
+  elements.tables.hidden = true;
+  elements.activeEmpty.hidden = true;
+  elements.closedEmpty.hidden = true;
   elements.loading.hidden = false;
   try {
     const response = await fetch(`${CSV_URL}&_=${Date.now()}`, { cache: "no-store" });

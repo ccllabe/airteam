@@ -39,15 +39,15 @@ function parseDate(raw) {
   const value = String(raw || "").trim();
   const digits = value.replace(/[^0-9]/g, "");
   if (digits.length === 8) return `${digits.slice(0, 4)}/${digits.slice(4, 6)}/${digits.slice(6)}`;
-  return value || "—";
+  return value;
 }
 
 function toRow(headers, values) {
   const item = {};
   headers.forEach((header, index) => { item[header] = String(values[index] || "").trim(); });
   return {
-    visibility: item["公開"] || "", status: item["狀態"] || "未分類",
-    serviceCount: item["服務人數"] || "—", computerCount: item["電腦數"] || "—", colleague: item["需求者姓名(公開)"] || "—", department: item["需求者系所"] || "—", title: item["標題"] || "未命名需求",
+    visibility: item["公開"] || "", status: item["狀態"] || "",
+    serviceCount: item["服務人數"] || "", computerCount: item["電腦數"] || "", colleague: item["需求者姓名(公開)"] || "", department: item["需求者系所"] || "", title: item["標題"] || "",
     assignees: item["承辦人"] || "", date: item["立案日"] || "", expectedDate: item["預完日"] || "", closeDate: item["結案日"] || "",
   };
 }
@@ -107,13 +107,13 @@ function updateSortIndicators() {
 function renderRows(rows) {
   return rows.map((item) => `
     <tr>
-      <td><span class="status-badge ${statusClass(item.status)}">${escapeHtml(item.status)}</span></td>
+      <td>${item.status ? `<span class="status-badge ${statusClass(item.status)}">${escapeHtml(item.status)}</span>` : ""}</td>
       <td class="service-count-cell">${escapeHtml(item.serviceCount)}</td>
       <td class="computer-count-cell">${escapeHtml(item.computerCount)}</td>
       <td class="colleague-cell">${escapeHtml(item.colleague)}</td>
       <td class="department-cell">${escapeHtml(item.department)}</td>
       <td class="title-cell">${escapeHtml(item.title)}</td>
-      <td><div class="assignee-list">${getAssigneeSurnames(item.assignees).map((surname) => `<span class="assignee-avatar">${escapeHtml(surname)}</span>`).join("") || "—"}</div></td>
+      <td><div class="assignee-list">${getAssigneeSurnames(item.assignees).map((surname) => `<span class="assignee-avatar">${escapeHtml(surname)}</span>`).join("")}</div></td>
       <td class="date-cell">${escapeHtml(parseDate(item.date))}</td>
       <td class="date-cell">${escapeHtml(parseDate(item.expectedDate))}</td>
       <td class="date-cell">${escapeHtml(parseDate(item.closeDate))}</td>

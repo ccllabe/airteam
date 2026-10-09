@@ -21,6 +21,15 @@ h1 { margin: 0; color: var(--navy); font-size: clamp(16px, 2vw, 22px); line-heig
 .summary-label { display: block; color: var(--muted); font-size: 13px; font-weight: 600; }
 .summary-card strong { display: block; margin: 8px 0 1px; color: var(--navy); font-size: 32px; line-height: 1.1; letter-spacing: -.04em; }
 .summary-caption { color: #a0a8b9; font-size: 12px; }
+.leaderboard-panel { margin-bottom: 25px; padding: 24px 26px 28px; border: 1px solid var(--line); border-radius: 16px; background: var(--surface); box-shadow: 0 7px 24px rgba(31,45,74,.04); }
+.leaderboard-panel h2 { margin-bottom: 22px; }
+.leaderboard-list { display: grid; gap: 16px; max-width: 840px; margin: 0; padding: 0; list-style: none; }
+.leaderboard-track { position: relative; width: 100%; height: 32px; }
+.leaderboard-fill { position: absolute; top: 7px; left: 0; width: var(--score-percent); height: 18px; border-radius: 999px; background: #5e7cff; }
+.leaderboard-item:nth-child(2) .leaderboard-fill { background: #8198f6; }
+.leaderboard-item:nth-child(3) .leaderboard-fill { background: #a1b0eb; }
+.leaderboard-surname { position: absolute; top: 0; left: clamp(0px, calc(var(--score-percent) - 16px), calc(100% - 32px)); display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border: 2px solid #d1d9f6; border-radius: 50%; color: var(--navy); background: #fff; font-size: 14px; font-weight: 700; box-shadow: 0 2px 6px rgba(31,45,74,.08); }
+.leaderboard-empty { color: var(--muted); font-size: 13px; }
 .workspace-panel { overflow: hidden; border: 1px solid var(--line); border-radius: 16px; background: var(--surface); box-shadow: 0 7px 24px rgba(31,45,74,.04); }
 .toolbar { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 24px 26px 21px; border-bottom: 1px solid var(--line); }
 .toolbar-heading { display: flex; align-items: baseline; gap: 10px; white-space: nowrap; }
@@ -92,6 +101,7 @@ tbody tr:hover { background: #fafbff; }
   .app-shell { padding: 25px 14px 35px; }
   .hero { align-items: flex-start; flex-direction: column; margin-bottom: 25px; }
   .toolbar, .panel-footer { padding-right: 17px; padding-left: 17px; }
+  .leaderboard-panel { padding: 20px 17px 24px; }
   .toolbar-controls { display: grid; grid-template-columns: 1fr 1fr; width: 100%; }
   .search-box { grid-column: 1 / -1; width: 100%; }
   .select-wrap, select { width: 100%; }

@@ -1,5 +1,5 @@
 const SHEET_ID = "1iDwcpwO82rt4QqUc-B3SxE5NfaTLlzJWcozrOf3LKJA";
-const SHEET_QUERY = encodeURIComponent("select A, B, D, E, F, J, K, M, P, Q, R where A <> '不公開'");
+const SHEET_QUERY = encodeURIComponent("select A, B, D, E, F, J, K, M, N, P, Q, R where A <> '不公開'");
 const CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&tq=${SHEET_QUERY}`;
 
 const state = { rows: [], search: "", status: "all", sortKey: "date", sortDirection: "desc" };
@@ -11,6 +11,7 @@ const elements = {
   message: document.querySelector("#status-message"), search: document.querySelector("#search-input"), status: document.querySelector("#status-filter"),
   refresh: document.querySelector("#refresh-button"), resultCount: document.querySelector("#result-count"),
   visibleCount: document.querySelector("#visible-count"), activeCount: document.querySelector("#active-count"), closedCount: document.querySelector("#closed-count"),
+  leaderboard: document.querySelector("#leaderboard"), leaderboardList: document.querySelector("#leaderboard-list"),
 };
 
 function parseCsv(text) {
@@ -48,7 +49,7 @@ function toRow(headers, values) {
   return {
     visibility: item["公開"] || "", status: item["狀態"] || "",
     serviceCount: item["服務人數"] || "", computerCount: item["電腦數"] || "", colleague: item["需求者姓名(公開)"] || "", department: item["需求者系所"] || "", title: item["標題"] || "",
-    assignees: item["承辦人"] || "", date: item["立案日"] || "", expectedDate: item["預完日"] || "", closeDate: item["結案日"] || "",
+    assignees: item["承辦人"] || "", points: item["積分"] || "", date: item["立案日"] || "", expectedDate: item["預完日"] || "", closeDate: item["結案日"] || "",
   };
 }
 
@@ -59,12 +60,49 @@ function statusClass(status) {
   return "status-other";
 }
 
-function getAssigneeSurnames(value) {
+function splitAssignees(value) {
   return String(value || "")
     .split(/[、；，。,.;]+/)
-    .map((person) => person.trim())
-    .filter(Boolean)
-    .map((person) => person.charAt(0));
+    .map((person) => person.replace(/\s+/g, " ").trim())
+    .filter(Boolean);
+}
+
+function getAssigneeSurnames(value) {
+  return splitAssignees(value).map((person) => person.charAt(0));
+}
+
+function calculateLeaderboard(rows) {
+  const totals = new Map();
+  rows.forEach((item) => {
+    if (!item.points) return;
+    const points = Number(item.points.replace(/,/g, ""));
+    if (!Number.isFinite(points)) return;
+    new Set(splitAssignees(item.assignees)).forEach((person) => {
+      totals.set(person, (totals.get(person) || 0) + points);
+    });
+  });
+  return [...totals].map(([person, points]) => ({ person, points }))
+    .sort((a, b) => b.points - a.points || a.person.localeCompare(b.person, "zh-Hant"))
+    .slice(0, 3);
+}
+
+function renderLeaderboard() {
+  const leaders = calculateLeaderboard(state.rows);
+  const maxPoints = Math.max(0, ...leaders.map(({ points }) => points));
+  const pointFormat = new Intl.NumberFormat("zh-TW", { maximumFractionDigits: 2 });
+  elements.leaderboardList.innerHTML = leaders.length
+    ? leaders.map(({ person, points }, index) => {
+      const percent = maxPoints > 0 ? Math.max(0, points / maxPoints * 100) : 0;
+      const surname = escapeHtml(person.charAt(0));
+      const label = escapeHtml(`第 ${index + 1} 名，${person.charAt(0)}，${pointFormat.format(points)} 分`);
+      return `<li class="leaderboard-item" aria-label="${label}">
+        <div class="leaderboard-track" style="--score-percent: ${percent.toFixed(2)}%">
+          <span class="leaderboard-fill"></span><span class="leaderboard-surname">${surname}</span>
+        </div>
+      </li>`;
+    }).join("")
+    : '<li class="leaderboard-empty">目前沒有積分資料</li>';
+  elements.leaderboard.hidden = false;
 }
 
 function escapeHtml(value) {
@@ -155,6 +193,7 @@ async function loadData() {
   elements.refresh.classList.add("is-loading");
   elements.message.hidden = true;
   elements.tables.hidden = true;
+  elements.leaderboard.hidden = true;
   elements.activeEmpty.hidden = true;
   elements.closedEmpty.hidden = true;
   elements.loading.hidden = false;
@@ -166,6 +205,7 @@ async function loadData() {
     const headers = parsed[0].map(normalizeHeader);
     state.rows = parsed.slice(1).map((values) => toRow(headers, values)).filter((item) => item.visibility !== "不公開");
     setOptions(elements.status, [...new Set(state.rows.map((item) => item.status).filter(Boolean))], "所有狀態");
+    renderLeaderboard();
     render();
     elements.loading.hidden = true;
   } catch (error) {

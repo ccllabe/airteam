@@ -78,6 +78,7 @@ function calculateLeaderboard(rows) {
     const points = Number(item.points.replace(/,/g, ""));
     if (!Number.isFinite(points)) return;
     new Set(splitAssignees(item.assignees)).forEach((person) => {
+      if (person === "陳躍月") return;
       totals.set(person, (totals.get(person) || 0) + points);
     });
   });

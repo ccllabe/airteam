@@ -33,9 +33,11 @@
         </article>
       </section>
 
-      <section id="leaderboard" class="leaderboard-panel" aria-labelledby="leaderboard-title" hidden>
-        <h2 id="leaderboard-title">AIR Team 服務積分排行榜</h2>
-        <ol id="leaderboard-list" class="leaderboard-list"></ol>
+      <section class="leaderboard-panel" aria-labelledby="leaderboard-title">
+        <h2 id="leaderboard-title"><button id="leaderboard-toggle" class="leaderboard-toggle" type="button" aria-expanded="false" aria-controls="leaderboard-content">AIR Team 服務積分排行榜 <span class="leaderboard-chevron" aria-hidden="true"></span></button></h2>
+        <div id="leaderboard-content" class="leaderboard-content" hidden>
+          <ol id="leaderboard-list" class="leaderboard-list"></ol>
+        </div>
       </section>
 
       <section class="workspace-panel">

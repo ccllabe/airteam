@@ -11,7 +11,7 @@ const elements = {
   message: document.querySelector("#status-message"), search: document.querySelector("#search-input"), status: document.querySelector("#status-filter"),
   refresh: document.querySelector("#refresh-button"), resultCount: document.querySelector("#result-count"),
   visibleCount: document.querySelector("#visible-count"), activeCount: document.querySelector("#active-count"), closedCount: document.querySelector("#closed-count"),
-  leaderboard: document.querySelector("#leaderboard"), leaderboardList: document.querySelector("#leaderboard-list"),
+  leaderboardToggle: document.querySelector("#leaderboard-toggle"), leaderboardContent: document.querySelector("#leaderboard-content"), leaderboardList: document.querySelector("#leaderboard-list"),
 };
 
 function parseCsv(text) {
@@ -88,7 +88,7 @@ function calculateLeaderboard(rows) {
       if (!groups.has(points)) groups.set(points, { points, persons: [] });
       groups.get(points).persons.push(person);
     });
-  return [...groups.values()].slice(0, 3);
+  return [...groups.values()];
 }
 
 function renderLeaderboard() {
@@ -110,7 +110,6 @@ function renderLeaderboard() {
       </li>`;
     }).join("")
     : '<li class="leaderboard-empty">目前沒有積分資料</li>';
-  elements.leaderboard.hidden = false;
 }
 
 function escapeHtml(value) {
@@ -201,7 +200,6 @@ async function loadData() {
   elements.refresh.classList.add("is-loading");
   elements.message.hidden = true;
   elements.tables.hidden = true;
-  elements.leaderboard.hidden = true;
   elements.activeEmpty.hidden = true;
   elements.closedEmpty.hidden = true;
   elements.loading.hidden = false;
@@ -227,6 +225,11 @@ async function loadData() {
 elements.search.addEventListener("input", (event) => { state.search = event.target.value.trim(); render(); });
 elements.status.addEventListener("change", (event) => { state.status = event.target.value; render(); });
 elements.refresh.addEventListener("click", loadData);
+elements.leaderboardToggle.addEventListener("click", () => {
+  const expanded = elements.leaderboardToggle.getAttribute("aria-expanded") === "true";
+  elements.leaderboardToggle.setAttribute("aria-expanded", String(!expanded));
+  elements.leaderboardContent.hidden = expanded;
+});
 document.querySelectorAll(".sort-button").forEach((button) => {
   button.addEventListener("click", () => {
     const nextKey = button.dataset.sortKey;

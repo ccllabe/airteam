@@ -1,5 +1,5 @@
 const SHEET_ID = "1iDwcpwO82rt4QqUc-B3SxE5NfaTLlzJWcozrOf3LKJA";
-const SHEET_QUERY = encodeURIComponent("select A, B, D, E, I, J, L, O, P, Q where A <> '不公開'");
+const SHEET_QUERY = encodeURIComponent("select A, B, D, E, F, J, K, M, P, Q, R where A <> '不公開'");
 const CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&tq=${SHEET_QUERY}`;
 
 const state = { rows: [], search: "", status: "all", sortKey: "date", sortDirection: "desc" };
@@ -47,7 +47,7 @@ function toRow(headers, values) {
   headers.forEach((header, index) => { item[header] = String(values[index] || "").trim(); });
   return {
     visibility: item["公開"] || "", status: item["狀態"] || "未分類",
-    serviceCount: item["服務人數"] || "—", colleague: item["需求者姓名(公開)"] || "—", department: item["需求者系所"] || "—", title: item["標題"] || "未命名需求",
+    serviceCount: item["服務人數"] || "—", computerCount: item["電腦數"] || "—", colleague: item["需求者姓名(公開)"] || "—", department: item["需求者系所"] || "—", title: item["標題"] || "未命名需求",
     assignees: item["承辦人"] || "", date: item["立案日"] || "", expectedDate: item["預完日"] || "", closeDate: item["結案日"] || "",
   };
 }
@@ -86,7 +86,7 @@ function sortedRows(rows) {
     if (!firstValue && secondValue) return 1;
     if (firstValue && !secondValue) return -1;
     if (!firstValue && !secondValue) return 0;
-    const comparison = state.sortKey === "serviceCount"
+    const comparison = ["serviceCount", "computerCount"].includes(state.sortKey)
       ? (Number(firstValue) || 0) - (Number(secondValue) || 0)
       : firstValue.localeCompare(secondValue, "zh-Hant", { numeric: true, sensitivity: "base" });
     return state.sortDirection === "asc" ? comparison : -comparison;
@@ -109,6 +109,7 @@ function renderRows(rows) {
     <tr>
       <td><span class="status-badge ${statusClass(item.status)}">${escapeHtml(item.status)}</span></td>
       <td class="service-count-cell">${escapeHtml(item.serviceCount)}</td>
+      <td class="computer-count-cell">${escapeHtml(item.computerCount)}</td>
       <td class="colleague-cell">${escapeHtml(item.colleague)}</td>
       <td class="department-cell">${escapeHtml(item.department)}</td>
       <td class="title-cell">${escapeHtml(item.title)}</td>

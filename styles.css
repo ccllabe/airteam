@@ -44,7 +44,7 @@ select { min-width: 112px; padding: 0 29px 0 11px; appearance: none; background-
 .table-section-title { margin: 0; color: var(--navy); font-size: 15px; font-weight: 700; }
 .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
 table { width: 100%; border-collapse: collapse; text-align: left; }
-.table-section table { min-width: 1180px; }
+.table-section table { min-width: 1280px; }
 th { height: 47px; padding: 0 18px; border-bottom: 1px solid var(--line); color: #9aa3b3; background: #fbfcfe; font-size: 12px; font-weight: 600; white-space: nowrap; }
 th:first-child, td:first-child { padding-left: 26px; }
 .sort-button { display: inline-flex; align-items: center; gap: 5px; padding: 0; border: 0; color: inherit; background: transparent; font: inherit; font-weight: 600; white-space: nowrap; }
@@ -56,9 +56,9 @@ th:first-child, td:first-child { padding-left: 26px; }
 td { height: 70px; padding: 12px 18px; border-bottom: 1px solid #f0f2f6; color: #69748b; font-size: 13px; }
 tbody tr { transition: background .15s ease; }
 tbody tr:hover { background: #fafbff; }
-.status-column { width: 112px; } .service-count-column { width: 88px; } .colleague-column { width: 90px; } .title-column { width: 30%; } .assignee-column { width: 150px; } .date-column { width: 130px; }
+.status-column { width: 112px; } .service-count-column, .computer-count-column { width: 88px; } .colleague-column { width: 90px; } .title-column { width: 30%; } .assignee-column { width: 150px; } .date-column { width: 130px; }
 .title-cell { color: #28344d; font-weight: 600; } .department-cell { color: #5d6980; }
-.service-count-cell { color: #5d6980; font-variant-numeric: tabular-nums; text-align: center; }
+.service-count-cell, .computer-count-cell { color: #5d6980; font-variant-numeric: tabular-nums; text-align: center; }
 .date-cell { color: #7f899c; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .assignee-list { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; }
 .assignee-avatar { display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border: 1px solid #cfd7f3; border-radius: 50%; color: var(--blue); background: #f3f5ff; font-size: 13px; font-weight: 700; }

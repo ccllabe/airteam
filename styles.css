@@ -23,12 +23,15 @@ h1 { margin: 0; color: var(--navy); font-size: clamp(16px, 2vw, 22px); line-heig
 .summary-caption { color: #a0a8b9; font-size: 12px; }
 .leaderboard-panel { margin-bottom: 25px; padding: 24px 26px 28px; border: 1px solid var(--line); border-radius: 16px; background: var(--surface); box-shadow: 0 7px 24px rgba(31,45,74,.04); }
 .leaderboard-panel h2 { margin-bottom: 22px; }
-.leaderboard-list { display: grid; gap: 16px; max-width: 840px; margin: 0; padding: 0; list-style: none; }
+.leaderboard-list { display: grid; gap: 30px; max-width: 840px; margin: 0; padding: 0; list-style: none; }
 .leaderboard-track { position: relative; width: 100%; height: 32px; }
+.leaderboard-track:focus-visible { outline: 2px solid var(--blue); outline-offset: 4px; }
 .leaderboard-fill { position: absolute; top: 7px; left: 0; width: var(--score-percent); height: 18px; border-radius: 999px; background: #5e7cff; }
 .leaderboard-item:nth-child(2) .leaderboard-fill { background: #8198f6; }
 .leaderboard-item:nth-child(3) .leaderboard-fill { background: #a1b0eb; }
-.leaderboard-surname { position: absolute; top: 0; left: clamp(0px, calc(var(--score-percent) - 16px), calc(100% - 32px)); display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border: 2px solid #d1d9f6; border-radius: 50%; color: var(--navy); background: #fff; font-size: 14px; font-weight: 700; box-shadow: 0 2px 6px rgba(31,45,74,.08); }
+.leaderboard-surnames { position: absolute; top: 0; left: clamp(0px, calc(var(--score-percent) - var(--name-half)), calc(100% - var(--name-width))); display: flex; align-items: center; justify-content: center; width: var(--name-width); height: 32px; border: 2px solid #d1d9f6; border-radius: 999px; color: var(--navy); background: #fff; font-size: 14px; font-weight: 700; white-space: nowrap; box-shadow: 0 2px 6px rgba(31,45,74,.08); }
+.leaderboard-tooltip { position: absolute; top: calc(100% + 5px); left: 50%; z-index: 1; padding: 5px 9px; border-radius: 6px; color: #fff; background: var(--navy); font-size: 12px; font-weight: 500; white-space: nowrap; box-shadow: 0 4px 12px rgba(16,26,51,.18); opacity: 0; visibility: hidden; transform: translateX(-50%); pointer-events: none; }
+.leaderboard-track:hover .leaderboard-tooltip, .leaderboard-track:focus-visible .leaderboard-tooltip { opacity: 1; visibility: visible; }
 .leaderboard-empty { color: var(--muted); font-size: 13px; }
 .workspace-panel { overflow: hidden; border: 1px solid var(--line); border-radius: 16px; background: var(--surface); box-shadow: 0 7px 24px rgba(31,45,74,.04); }
 .toolbar { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 24px 26px 21px; border-bottom: 1px solid var(--line); }

@@ -81,9 +81,14 @@ function calculateLeaderboard(rows) {
       totals.set(person, (totals.get(person) || 0) + points);
     });
   });
-  return [...totals].map(([person, points]) => ({ person, points }))
+  const groups = new Map();
+  [...totals].map(([person, points]) => ({ person, points: Math.round(points * 1e6) / 1e6 }))
     .sort((a, b) => b.points - a.points || a.person.localeCompare(b.person, "zh-Hant"))
-    .slice(0, 3);
+    .forEach(({ person, points }) => {
+      if (!groups.has(points)) groups.set(points, { points, persons: [] });
+      groups.get(points).persons.push(person);
+    });
+  return [...groups.values()].slice(0, 3);
 }
 
 function renderLeaderboard() {
@@ -91,13 +96,16 @@ function renderLeaderboard() {
   const maxPoints = Math.max(0, ...leaders.map(({ points }) => points));
   const pointFormat = new Intl.NumberFormat("zh-TW", { maximumFractionDigits: 2 });
   elements.leaderboardList.innerHTML = leaders.length
-    ? leaders.map(({ person, points }, index) => {
+    ? leaders.map(({ persons, points }, index) => {
       const percent = maxPoints > 0 ? Math.max(0, points / maxPoints * 100) : 0;
-      const surname = escapeHtml(person.charAt(0));
-      const label = escapeHtml(`第 ${index + 1} 名，${person.charAt(0)}，${pointFormat.format(points)} 分`);
-      return `<li class="leaderboard-item" aria-label="${label}">
-        <div class="leaderboard-track" style="--score-percent: ${percent.toFixed(2)}%">
-          <span class="leaderboard-fill"></span><span class="leaderboard-surname">${surname}</span>
+      const surnames = persons.map((person) => person.charAt(0)).join("");
+      const nameWidth = Math.max(32, [...surnames].length * 18 + 14);
+      const scoreText = `${pointFormat.format(points)} 分`;
+      const label = escapeHtml(`第 ${index + 1} 名，${surnames}，${scoreText}`);
+      return `<li class="leaderboard-item">
+        <div class="leaderboard-track" role="img" tabindex="0" aria-label="${label}" style="--score-percent: ${percent.toFixed(2)}%; --name-width: ${nameWidth}px; --name-half: ${nameWidth / 2}px">
+          <span class="leaderboard-fill"></span>
+          <span class="leaderboard-surnames">${escapeHtml(surnames)}<span class="leaderboard-tooltip" aria-hidden="true">${escapeHtml(scoreText)}</span></span>
         </div>
       </li>`;
     }).join("")

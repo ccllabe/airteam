@@ -14,28 +14,6 @@
     status.dataset.kind = kind;
   }
 
-  function parseCsv(text) {
-    const rows = [];
-    let row = [], cell = '', quoted = false;
-    for (let i = 0; i < text.length; i += 1) {
-      const char = text[i];
-      if (char === '"') {
-        if (quoted && text[i + 1] === '"') { cell += '"'; i += 1; }
-        else quoted = !quoted;
-      } else if (char === ',' && !quoted) { row.push(cell); cell = ''; }
-      else if ((char === '\n' || char === '\r') && !quoted) {
-        if (char === '\r' && text[i + 1] === '\n') i += 1;
-        row.push(cell);
-        if (row.some(value => value.trim())) rows.push(row);
-        row = []; cell = '';
-      } else cell += char;
-    }
-    if (quoted) throw new Error('試算表資料格式不完整，請稍後重試。');
-    row.push(cell);
-    if (row.some(value => value.trim())) rows.push(row);
-    return rows;
-  }
-
   function parseDate(value) {
     const match = value.match(/^(\d{4})[-/年](\d{1,2})[-/月](\d{1,2})日?$/) || value.match(/^(\d{4})(\d{2})(\d{2})$/);
     if (!match) return null;
@@ -47,6 +25,7 @@
 
   function photoUrl(value) {
     if (!value) return '';
+    if (/^data:image\/(png|jpeg|gif|webp);base64,[A-Za-z0-9+/=]+$/.test(value)) return value;
     let url;
     try { url = new URL(value); } catch (_) { return ''; }
     if (!['https:', 'http:'].includes(url.protocol)) return '';
@@ -58,20 +37,20 @@
     return url.href;
   }
 
-  function readEvents(text) {
-    const rows = parseCsv(text.replace(/^\uFEFF/, ''));
+  function readEvents(rows) {
     const normalize = value => value.trim().replace(/\s+/g, '').replace(/（/g, '(').replace(/）/g, ')').toLowerCase();
-    const headers = (rows.shift() || []).map(normalize);
+    const headers = (rows[0] || []).map(normalize);
     const indices = ['日期', '標題', '文字(markdown)', '照片'].map(name => headers.indexOf(name));
     if (indices.some(index => index < 0)) throw new Error('無法讀取四個必要欄位，請確認試算表分享權限與欄位名稱。');
     const events = [];
     let skipped = 0;
     rows.forEach((row, index) => {
+      if (index === 0) return;
       const [date, title, markdown, photo] = indices.map(column => (row[column] || '').trim());
       if (![date, title, markdown, photo].some(Boolean)) return;
       const createdTime = parseDate(date);
       if (!createdTime || !title || !markdown) { skipped += 1; return; }
-      events.push({id: String(index + 2).padStart(10, '0'), title, createdTime, markdown, coverUrl: photoUrl(photo)});
+      events.push({id: String(index + 1).padStart(10, '0'), title, createdTime, markdown, coverUrl: photoUrl(photo)});
     });
     return {events, skipped};
   }
@@ -146,16 +125,15 @@
 
   async function loadLive() {
     if (!/^[\w-]+$/.test(config.sheetId || '')) throw new Error('活動試算表設定不正確。');
-    const url = new URL('https://docs.google.com/spreadsheets/d/' + config.sheetId + '/gviz/tq');
-    url.searchParams.set('tqx', 'out:csv');
-    url.searchParams.set('headers', '1');
+    const url = new URL('https://docs.google.com/spreadsheets/d/' + config.sheetId + '/export');
+    url.searchParams.set('format', 'xlsx');
     url.searchParams.set('_', String(Date.now()));
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 30000);
     try {
       const response = await fetch(url, {cache: 'no-store', credentials: 'omit', signal: controller.signal});
       if (!response.ok) throw new Error('無法讀取試算表，請確認已開放所有人查看。');
-      return readEvents(await response.text());
+      return readEvents(EVENT_SHEET.read(await response.arrayBuffer()));
     } catch (error) {
       if (error.name === 'AbortError') throw new Error('試算表連線逾時，請稍後重試。');
       if (error instanceof TypeError) throw new Error('無法連線 Google Sheets，請確認網路與試算表分享權限。');

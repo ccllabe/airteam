@@ -18,7 +18,7 @@ https://docs.google.com/spreadsheets/d/1KUzCF6iYFt_MH1uRk9VFdTz-9RxTnpMazDvlQd2a
 - 日期接受 `20261012`、`2026/10/12`、`2026-10-12`、`2026年10月12日`。請使用西元日期；網站依此欄由新到舊排序，同一天依試算表列順序排列。
 - 新聞標題以「標題」欄為準，Markdown 內容獨立顯示，支援段落、粗體、清單、連結及小標題。
 - 日期、標題或文字缺漏／日期無效時，略過該列並在同步提示中顯示略過數量。全空白列忽略。
-- 照片欄請貼入 `https://…` 圖片網址。不可直接插入儲存格圖片或使用 `IMAGE()` 公式，因為 Google 的 CSV 不會提供這些圖片資料。
+- 照片欄可直接插入圖片，也可貼入 `https://…` 圖片網址。網站讀取 Google Sheets 的 XLSX 匯出，依圖片左上角所在的欄與列對應報導；請將圖片放在該篇報導的「照片」欄同一列。匯出不含圖片的公式或圖形無法顯示。
 - 支援公開 Google Drive 圖片的 `https://drive.google.com/file/d/檔案ID/view`、`https://drive.google.com/open?id=檔案ID` 連結，網站會轉成縮圖網址；該圖片也必須允許未登入者查看。Drive 仍可能限制圖片請求，GitHub Pages 或其他公開圖片託管的直接圖片網址較穩定。
 - 照片空白或網址格式無效時，保留報導並顯示「尚未提供活動照片」；有效網址載入失敗時顯示照片錯誤提示。
 
@@ -28,4 +28,4 @@ https://docs.google.com/spreadsheets/d/1KUzCF6iYFt_MH1uRk9VFdTz-9RxTnpMazDvlQd2a
 
 執行 `python -m http.server 8000`，開啟 http://localhost:8000/event.html 。
 
-試算表 ID 位於 `event-config.js`；日後如需更換來源，可修改該設定。Markdown 以本地固定版本的 marked 15.0.12 解析、DOMPurify 3.2.7 清理，不依賴外部 CDN。
+試算表 ID 位於 `event-config.js`；日後如需更換來源，可修改該設定。Markdown 以本地固定版本的 marked 15.0.12 解析、DOMPurify 3.2.7 清理，XLSX 以 fflate 0.8.2 解壓，不依賴外部 CDN。

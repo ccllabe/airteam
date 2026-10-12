@@ -1,5 +1,5 @@
-// 部署 drive-events.gs 後，將 Google Apps Script「網頁應用程式」/exec 網址貼在這裡。
+// 活動內容一律讀取此試算表的第一個工作表。
 window.EVENT_CONFIG = {
-  endpoint: "",
+  sheetId: "1KUzCF6iYFt_MH1uRk9VFdTz-9RxTnpMazDvlQd2aH2k",
   refreshIntervalMs: 60000,
 };

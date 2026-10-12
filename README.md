@@ -1,6 +1,6 @@
 # CGU AIR Team 服務狀態總覽
 
-活動記錄頁面：[`event.html`](event.html)。Google Drive 自動同步的部署方式請見 [`EVENT-SETUP.md`](EVENT-SETUP.md)。
+活動記錄頁面：[`event.html`](event.html)，直接讀取 Google Sheets。欄位與照片填寫方式請見 [`EVENT-SETUP.md`](EVENT-SETUP.md)。
 
 這是一個直接讀取 Google 試算表公開 CSV 的靜態網頁，會自動排除「公開」欄位為「不公開」的項目。
 

@@ -2,39 +2,30 @@
 
 網頁：https://ccllabe.github.io/airteam/event.html
 
-GitHub Pages 提供靜態網頁，Google Drive 分享連結沒有提供瀏覽器可直接呼叫的資料夾列表 API。此頁透過 Google Apps Script 讀取固定的活動根資料夾；無須 API 金鑰。未設定讀取端前，頁面顯示 2026/10/13 擷取的真實活動快照，並明確標示尚未啟用即時連線。
+內容直接讀取 Google Sheets 的第一個工作表：
+https://docs.google.com/spreadsheets/d/1KUzCF6iYFt_MH1uRk9VFdTz-9RxTnpMazDvlQd2aH2k/edit?usp=sharing
 
-## 啟用即時讀取（只需一次）
+這份試算表目前可供未登入訪客讀取，不需要 Apps Script、API 金鑰或另外維護活動快照。請保留「知道連結的所有人可以查看」權限；若改為私人，網站將無法讀取。
 
-1. 使用能存取活動根資料夾的 Google 帳號開啟 https://script.google.com/ ，建立「新專案」。
-2. 將本專案 `drive-events.gs` 的內容完整貼到 Apps Script 的 `程式碼.gs`，儲存。
-3. 點選「部署 → 新增部署作業」，類型選「網頁應用程式」。
-4. 「執行身分」選「我」，「誰可以存取」選「所有人」（包含未登入者）。依畫面指示授權 Drive 讀取權限。若學校帳號不提供「所有人」，需由 Google Workspace 管理員允許公開網頁應用程式，或使用可公開部署且能讀取此資料夾的帳號。
-5. 複製部署產生的網址，須為 `https://script.google.com/macros/s/部署ID/exec`，不要用 `/dev` 測試網址。
-6. 將網址填入 `event-config.js` 的 `endpoint`，提交到 GitHub 的 `main` 分支。也可以把網址貼給 Codex 完成設定。
-7. 開啟 `event.html`，確認提示為「已連線 Google Drive」。可新增或修改活動報導，按「重新整理」驗證最新內容。
+## 維護活動
 
-讀取端每次請求都讀取 Drive，不使用後端內容快取。網頁開啟時、回到分頁時及可見期間每 60 秒更新；這是定時同步，非 Drive 推播。連線失敗會標示錯誤並保留已載入內容。
+第一列為欄位名稱，每一列代表一篇活動：
 
-## 活動資料夾規則
+| 日期 | 標題 | 文字 (markdown) | 照片 |
+| --- | --- | --- | --- |
+| 20261012 | 活動標題 | 完整 Markdown 報導 | 可公開讀取的圖片網址 |
 
-根資料夾：https://drive.google.com/drive/folders/1Q9r9_8J0SsgRuO8-pbkSHdZNyrSPRFSI
+- 日期接受 `20261012`、`2026/10/12`、`2026-10-12`、`2026年10月12日`。請使用西元日期；網站依此欄由新到舊排序，同一天依試算表列順序排列。
+- 新聞標題以「標題」欄為準，Markdown 內容獨立顯示，支援段落、粗體、清單、連結及小標題。
+- 日期、標題或文字缺漏／日期無效時，略過該列並在同步提示中顯示略過數量。全空白列忽略。
+- 照片欄請貼入 `https://…` 圖片網址。不可直接插入儲存格圖片或使用 `IMAGE()` 公式，因為 Google 的 CSV 不會提供這些圖片資料。
+- 支援公開 Google Drive 圖片的 `https://drive.google.com/file/d/檔案ID/view`、`https://drive.google.com/open?id=檔案ID` 連結，網站會轉成縮圖網址；該圖片也必須允許未登入者查看。Drive 仍可能限制圖片請求，GitHub Pages 或其他公開圖片託管的直接圖片網址較穩定。
+- 照片空白或網址格式無效時，保留報導並顯示「尚未提供活動照片」；有效網址載入失敗時顯示照片錯誤提示。
 
-每個根資料夾下的直接子資料夾代表一則活動，其第一層必須同時有：
-
-- `封面圖片.png`：PNG 圖片。
-- `活動報導.md`：UTF-8 Markdown 文字。
-
-缺少任一檔案就略過整則活動；不遞迴搜尋更深層的資料夾。同名檔案有多份時使用最後修改的一份。Markdown 第一個 `# 標題` 作為新聞標題，沒有則用資料夾名稱。排序使用 **Drive 資料夾建立時間**，非資料夾名稱、活動日期或修改時間。
-
-封面依螢幕寬度縮放、保留比例，不裁切。即時模式由讀取端傳回 Drive 縮圖（無縮圖則使用原圖），避免 Google Drive 圖片連結在訪客瀏覽器遭到限制。報導支援 Markdown，輸出會以 DOMPurify 清理。Markdown 中另行引用的圖片仍須可供訪客讀取。
-
-部署為「以我執行、所有人可存取」代表這兩個指定檔案的內容會公開給網站訪客。程式只開放固定根資料夾，不接受外部傳入任意資料夾 ID。Apps Script 的服務配額與執行時間限制仍適用；活動與流量增加時需評估。
-
-修改 `drive-events.gs` 後，需在 Apps Script 的「管理部署作業 → 編輯 → 新版本」更新部署。
+頁面開啟、回到分頁及分頁可見期間每 60 秒都讀取此試算表，也可手動按「重新整理」。Google 可能短暫快取回應，因此更新不是推播且不保證立即出現。讀取失敗時顯示錯誤，保留本次頁面中最後成功取得的內容，不載入先前 Drive 快照。
 
 ## 本機預覽
 
-在本專案目錄執行 `python -m http.server 8000`，開啟 http://localhost:8000/event.html 。
+執行 `python -m http.server 8000`，開啟 http://localhost:8000/event.html 。
 
-Markdown 解析器及清理器已固定版本並放在 `vendor/`（marked 15.0.12、DOMPurify 3.2.7），不依賴外部 CDN。
+試算表 ID 位於 `event-config.js`；日後如需更換來源，可修改該設定。Markdown 以本地固定版本的 marked 15.0.12 解析、DOMPurify 3.2.7 清理，不依賴外部 CDN。

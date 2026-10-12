@@ -1,5 +1,7 @@
 # CGU AIR Team 服務狀態總覽
 
+活動記錄頁面：[`event.html`](event.html)。Google Drive 自動同步的部署方式請見 [`EVENT-SETUP.md`](EVENT-SETUP.md)。
+
 這是一個直接讀取 Google 試算表公開 CSV 的靜態網頁，會自動排除「公開」欄位為「不公開」的項目。
 
 直接用瀏覽器開啟 `index.html`，或使用任何靜態網站伺服器部署此資料夾。若瀏覽器限制本機檔案的跨來源請求，請以靜態伺服器啟動，例如：

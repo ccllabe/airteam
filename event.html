@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#164e47">
+  <meta name="description" content="CGU AIR Team 活動記錄，記錄長庚大學 AI 推廣、交流與服務的每一刻。">
+  <title>CGU AIR Team 活動記錄</title>
+  <link rel="stylesheet" href="event.css">
+  <script src="vendor/marked.min.js" defer></script>
+  <script src="vendor/purify.min.js" defer></script>
+  <script src="event-config.js" defer></script>
+  <script src="event.js" defer></script>
+</head>
+<body>
+  <header class="hero">
+    <div class="shell">
+      <a class="brand" href="index.html">CGU <span>AIR TEAM</span></a>
+      <p class="eyebrow">一起探索 AI，記錄每一次相遇</p>
+      <h1>CGU AIR Team 活動記錄</h1>
+      <p class="intro">從工具實作到交流分享，讓 AI 走進教學、研究與日常。</p>
+    </div>
+  </header>
+  <main class="shell">
+    <div class="feed-bar">
+      <span id="event-count">活動紀錄</span>
+      <button id="refresh" type="button">重新整理 <span aria-hidden="true">↻</span></button>
+    </div>
+    <p id="status" role="status" aria-live="polite">正在載入活動…</p>
+    <section id="events" aria-label="活動報導" aria-busy="true"></section>
+    <noscript><p>請啟用 JavaScript，以載入活動報導。</p></noscript>
+    <footer>CGU AIR Team <span>｜全校人人有 AI</span><a href="https://drive.google.com/drive/folders/1Q9r9_8J0SsgRuO8-pbkSHdZNyrSPRFSI" target="_blank" rel="noopener noreferrer">活動資料夾 ↗</a></footer>
+  </main>
+</body>
+</html>

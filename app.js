@@ -1,6 +1,6 @@
 const SHEET_ID = "1iDwcpwO82rt4QqUc-B3SxE5NfaTLlzJWcozrOf3LKJA";
-const SHEET_QUERY = encodeURIComponent("select A, B, D, E, F, J, K, M, N, P, Q, R where A <> '不公開'");
-const CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&tq=${SHEET_QUERY}`;
+const CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv`;
+const REQUIRED_HEADERS = ["公開", "狀態", "需求者系所", "服務人數", "電腦數", "需求者姓名(公開)", "標題", "承辦人", "積分", "立案日", "預完日", "結案日"];
 
 const state = { rows: [], search: "", status: "all", sortKey: "date", sortDirection: "desc" };
 const elements = {
@@ -210,6 +210,8 @@ async function loadData() {
     const parsed = parseCsv(await response.text());
     if (parsed.length < 2) throw new Error("試算表沒有可顯示的資料");
     const headers = parsed[0].map(normalizeHeader);
+    const missingHeaders = REQUIRED_HEADERS.filter((header) => !headers.includes(header));
+    if (missingHeaders.length) throw new Error(`試算表缺少欄位：${missingHeaders.join("、")}`);
     state.rows = parsed.slice(1).map((values) => toRow(headers, values)).filter((item) => item.visibility !== "不公開");
     setOptions(elements.status, [...new Set(state.rows.map((item) => item.status).filter(Boolean))], "所有狀態");
     renderLeaderboard();
